@@ -29,14 +29,29 @@ class BurgerBuilder extends Component {
   }
 
   removeIngredientHandler = (type) => {
-
+    if (this.state.ingredients[type] <= 0) {
+      return;
+    }
+    const updatedIngredients = { ...this.state.ingredients };
+    updatedIngredients[type]--;
+    const updatedPrice = this.state.totalPrice - INGREDIENT_PRICES[type];
+    this.setState({ ingredients: updatedIngredients, totalPrice: updatedPrice });
   }
 
   render() {
+    const disabledInfo = {
+      ...this.state.ingredients
+    }
+    for (const key in disabledInfo) {
+      disabledInfo[key] = disabledInfo[key] <= 0
+    }
     return (
       <>
         <Burger ingredients={this.state.ingredients} />
-        <BuildControls ingredientAdded={this.addIngredientHandler} />
+        <BuildControls
+          ingredientAdded={this.addIngredientHandler}
+          ingredientRemoved={this.removeIngredientHandler}
+          disabledInfo={disabledInfo} />
       </>
     );
   }
